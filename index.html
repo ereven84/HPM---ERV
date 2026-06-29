@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HPM - ERV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════════════════════════════
+   HPM — STYLE.CSS
+   ═══════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:      #0A0A0A;
+  --black-soft: #111111;
+  --surface:    #161616;
+  --white:      #F0F0F0;
+  --white-dim:  #A0A0A0;
+  --red:        #B31217;
+  --glow:       rgba(255,255,255,0.08);
+  --font-title: 'Bebas Neue', sans-serif;
+  --font-body:  'Inter', sans-serif;
+  --radius:     12px;
+  --max-w:      1200px;
+  --ease-silk:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-weight: 400;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: -8%;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(40,20,20,0.7) 0%, transparent 70%),
+    var(--black-soft);
+  transform: scale(1.08);
+  animation: kenBurns 28s ease-in-out infinite alternate;
+  will-change: transform;
+  transition: transform 0.05s linear;
+}
+
+@keyframes kenBurns {
+  0%   { transform: scale(1.08) translate(0, 0); }
+  100% { transform: scale(1.16) translate(-1%, -1%); }
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%,
+    rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.85) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: heroFadeIn 2s var(--ease-silk) forwards;
+  opacity: 0;
+}
+
+@keyframes heroFadeIn {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero-logo-wrap {
+  position: relative;
+  text-align: center;
+  user-select: none;
+}
+
+.logo-glow {
+  position: absolute;
+  inset: -60px;
+  background: radial-gradient(ellipse 60% 50% at 50% 55%, rgba(255,255,255,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: glowPulse 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%   { opacity: 0.6; transform: scale(0.95); }
+  100% { opacity: 1;   transform: scale(1.05); }
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.logo-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  color: rgba(240,240,240,0.55);
+  text-transform: uppercase;
+}
+
+.logo-main {
+  font-family: var(--font-title);
+  font-size: clamp(5rem, 18vw, 14rem);
+  line-height: 0.9;
+  color: #fff;
+  letter-spacing: -0.01em;
+  text-shadow:
+    0 0 40px rgba(255,255,255,0.4),
+    0 0 120px rgba(255,255,255,0.15),
+    0 0 200px rgba(255,255,255,0.07);
+}
+
+.logo-artist {
+  font-family: var(--font-body);
+  font-size: clamp(0.6rem, 1.4vw, 0.8rem);
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  color: rgba(240,240,240,0.45);
+  text-transform: uppercase;
+}
+
+.hero-fade {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 45%;
+  background: linear-gradient(to bottom, transparent 0%, var(--black) 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ── COUNTDOWN ────────────────────────────────────────────────── */
+.countdown-float {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  margin-top: -90px;
+  padding: 0 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s var(--ease-silk), transform 1s var(--ease-silk);
+}
+
+.countdown-float.visible { opacity: 1; transform: translateY(0); }
+
+.countdown-glass {
+  background: rgba(255,255,255,0.035);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 36px 48px 40px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.07) inset;
+  text-align: center;
+  min-width: min(560px, 90vw);
+}
+
+.countdown-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  color: var(--white-dim);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.countdown-units {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.8s ease;
+}
+
+.unit { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 72px; }
+
+.unit-num {
+  font-family: var(--font-title);
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  line-height: 1;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  display: block;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.unit-num.flip-out { transform: translateY(-8px); opacity: 0; }
+.unit-num.flip-in  { animation: flipIn 0.3s var(--ease-silk); }
+@keyframes flipIn {
+  0%   { transform: translateY(8px); opacity: 0; }
+  100% { transform: translateY(0);   opacity: 1; }
+}
+
+.unit-label { font-size: 0.55rem; font-weight: 500; letter-spacing: 0.3em; color: var(--white-dim); text-transform: uppercase; }
+
+.unit-sep {
+  font-family: var(--font-title);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  color: rgba(240,240,240,0.2);
+  align-self: flex-start;
+  margin-top: 6px;
+  line-height: 1;
+}
+
+.countdown-done { display: none; flex-direction: column; align-items: center; gap: 20px; }
+
+.done-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  letter-spacing: 0.05em;
+  color: var(--white);
+}
+
+.btn-listen {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  background: var(--red);
+  border-radius: 40px;
+  padding: 14px 40px;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 0 24px rgba(179,18,23,0.35);
+}
+
+.btn-listen:hover { background: #d01419; box-shadow: 0 0 40px rgba(179,18,23,0.6); transform: translateY(-2px); }
+
+.fade-in-up { animation: fuAnim 0.8s var(--ease-silk) forwards; }
+@keyframes fuAnim {
+  0%   { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MAIN ─────────────────────────────────────────────────────── */
+.main-content {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 100px 40px 80px;
+}
+
+/* ── ALBUM SECTION ────────────────────────────────────────────── */
+.album-section { margin-bottom: 80px; }
+
+.album-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-bottom: 64px;
+}
+
+@keyframes coverEntrance { 0% { opacity:0; } 100% { opacity:1; } }
+
+.hpm2-cover {
+  background: radial-gradient(ellipse 60% 50% at 50% 40%, #2a1010 0%, #0f0808 60%, #000 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.hpm1-cover {
+  background: radial-gradient(ellipse 60% 50% at 50% 40%, #1a1208 0%, #0d0c08 60%, #000 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.cover-inner { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+
+.cover-logo-text {
+  font-family: var(--font-title);
+  font-size: 5rem;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.2);
+}
+
+.cover-part { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.4em; color: rgba(240,240,240,0.4); text-transform: uppercase; }
+
+.album-eyebrow { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--red); margin-bottom: 12px; }
+
+.album-title {
+  font-family: var(--font-title);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  line-height: 0.95;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+}
+
+.album-artist { font-size: 0.85rem; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white-dim); margin-bottom: 32px; }
+
+.album-meta { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,240,240,0.3); }
+
+/* ── TRACKLIST ────────────────────────────────────────────────── */
+.tracklist {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.track-item {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+
+/* Ligne principale */
+.track-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 4px;
+  transition: background 0.2s ease;
+  user-select: none;
+}
+
+.track-item.available .track-header { cursor: pointer; }
+.track-item.locked    .track-header { cursor: default; }
+.track-item.available .track-header:hover { background: rgba(255,255,255,0.025); }
+
+/* Numéro */
+.track-num {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: rgba(240,240,240,0.2);
+  min-width: 24px;
+  flex-shrink: 0;
+}
+
+/* Titre */
+.track-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  flex: 1;
+  transition: color 0.2s ease;
+}
+
+.track-item.available .track-title { color: var(--white); }
+.track-item.locked    .track-title { color: rgba(240,240,240,0.25); }
+.track-item.available .track-header:hover .track-title { color: #fff; }
+
+/* Icône droite */
+.track-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: rgba(240,240,240,0.2);
+  transition: color 0.25s ease, transform 0.3s var(--ease-silk);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-icon svg { width: 100%; height: 100%; }
+
+.track-item.available .track-header:hover .track-icon { color: rgba(240,240,240,0.6); }
+.track-item.open .track-icon { color: var(--red); transform: rotate(90deg); }
+
+/* Lecteur audio inline (MP3) */
+.track-audio {
+  display: none;
+  padding: 0 4px 16px 44px;
+}
+
+.track-item.playing .track-audio { display: block; }
+
+.track-audio audio {
+  width: 100%;
+  max-width: 480px;
+  height: 36px;
+  border-radius: 20px;
+  outline: none;
+  accent-color: var(--red);
+}
+
+/* Body dépliable (MP4) */
+.track-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.55s var(--ease-silk);
+}
+
+.track-video {
+  padding: 0 0 24px 44px;
+}
+
+.track-video video {
+  width: 100%;
+  max-width: 640px;
+  border-radius: 10px;
+  display: block;
+  background: #000;
+  outline: none;
+}
+
+/* ── DIVIDER ──────────────────────────────────────────────────── */
+.section-divider {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.12), transparent);
+  margin: 0 auto 80px;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 48px 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-logo { font-family: var(--font-title); font-size: 2rem; color: rgba(240,240,240,0.15); letter-spacing: 0.1em; }
+.footer-copy  { font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(240,240,240,0.2); }
+
+/* ── REVEAL ───────────────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.9s var(--ease-silk), transform 0.9s var(--ease-silk); }
+.reveal.revealed { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .main-content { padding: 80px 20px 60px; }
+  .album-layout { grid-template-columns: 1fr; gap: 32px; text-align: center; }
+  .album-cover-wrap { max-width: 200px; margin: 0 auto; }
+  .album-info { display: flex; flex-direction: column; align-items: center; }
+  .countdown-glass { padding: 28px 20px 32px; min-width: unset; width: 100%; }
+  .countdown-units { gap: 4px; }
+  .unit { min-width: 56px; }
+  .unit-sep { font-size: 1.8rem; }
+  .track-audio { padding-left: 24px; }
+  .track-video { padding-left: 0; }
+}
+
+@media (max-width: 480px) {
+  .unit { min-width: 44px; }
+  .unit-num { font-size: 2rem; }
+  .unit-sep { font-size: 1.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+
+/* ── FLIP CARD ────────────────────────────────────────────────── */
+.album-cover-wrap {
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flip-card {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: var(--radius);
+}
+
+.flip-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-front,
+.flip-back {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.flip-front {
+  background: #000;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+  background: #0a0a0a;
+}
+
+.flip-front img,
+.flip-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--radius);
+}
+
+/* Fallback cover si pas d'image */
+.flip-front .cover-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.flip-card:hover .flip-front {
+  box-shadow: 0 28px 80px rgba(0,0,0,0.85), 0 0 40px rgba(255,255,255,0.05);
+}
+
+/* Hint texte discret sous la pochette */
+.flip-hint {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(240,240,240,0.18);
+  transition: color 0.3s ease;
+  user-select: none;
+}
+
+.album-cover-wrap:hover .flip-hint {
+  color: rgba(240,240,240,0.35);
+}
+
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-logo-wrap">
+      <div class="logo-glow"></div>
+      <div class="logo-text">
+        <span class="logo-subtitle">HAUT POTENTIEL MUSICALE</span>
+        <span class="logo-main">HPM</span>
+        <span class="logo-artist">ERV</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-fade"></div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="countdown-float" id="countdownFloat">
+  <div class="countdown-glass">
+    <p class="countdown-label">SORTIE DANS</p>
+    <div class="countdown-units" id="countdownUnits">
+      <div class="unit"><span class="unit-num" id="cd-days">00</span><span class="unit-label">JOURS</span></div>
+      <div class="unit-sep">:</div>
+      <div class="unit"><span class="unit-num" id="cd-hours">00</span><span class="unit-label">HEURES</span></div>
+      <div class="unit-sep">:</div>
+      <div class="unit"><span class="unit-num" id="cd-mins">00</span><span class="unit-label">MINUTES</span></div>
+      <div class="unit-sep">:</div>
+      <div class="unit"><span class="unit-num" id="cd-secs">00</span><span class="unit-label">SECONDES</span></div>
+    </div>
+    <div class="countdown-done" id="countdownDone">
+      <p class="done-title">HPM Partie 2 est disponible</p>
+      <a href="#" class="btn-listen">Écouter maintenant</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main-content">
+
+  <!-- HPM Partie 2 -->
+  <section class="album-section reveal" id="hpm2">
+    <div class="album-layout">
+      <div class="album-cover-wrap" onclick="toggleFlip('flip2')">
+        <div class="flip-card" id="flip2">
+          <div class="flip-front">
+            <img src="media/pochette2.png" alt="HPM Partie 2" onerror="this.style.display='none'; this.parentElement.querySelector('.cover-fallback').style.display='flex'">
+            <div class="cover-fallback hpm2-cover" style="display:none">
+              <span class="cover-logo-text">HPM</span>
+              <span class="cover-part">PARTIE 2</span>
+            </div>
+          </div>
+          <div class="flip-back">
+            <img src="media/tracklist2.png" alt="Tracklist HPM Partie 2">
+          </div>
+        </div>
+        <p class="flip-hint">Cliquer pour voir la tracklist</p>
+      </div>
+      <div class="album-info">
+        <p class="album-eyebrow">Mixtape</p>
+        <h2 class="album-title">HPM<br>Partie 2</h2>
+        <p class="album-artist">ERV</p>
+        <p class="album-meta"><span id="hpm2-count">—</span> morceaux</p>
+      </div>
+    </div>
+    <div class="tracklist" id="tracklist-hpm2"></div>
+  </section>
+
+  <div class="section-divider reveal"></div>
+
+  <!-- HPM Partie 1 -->
+  <section class="album-section reveal" id="hpm1">
+    <div class="album-layout">
+      <div class="album-cover-wrap" onclick="toggleFlip('flip1')">
+        <div class="flip-card" id="flip1">
+          <div class="flip-front">
+            <img src="media/pochette1.png" alt="HPM Partie 1" onerror="this.style.display='none'; this.parentElement.querySelector('.cover-fallback').style.display='flex'">
+            <div class="cover-fallback hpm1-cover" style="display:none">
+              <span class="cover-logo-text">HPM</span>
+              <span class="cover-part">PARTIE 1</span>
+            </div>
+          </div>
+          <div class="flip-back">
+            <img src="media/tracklist1.png" alt="Tracklist HPM Partie 1">
+          </div>
+        </div>
+        <p class="flip-hint">Cliquer pour voir la tracklist</p>
+      </div>
+      <div class="album-info">
+        <p class="album-eyebrow">Mixtape</p>
+        <h2 class="album-title">HPM<br>Partie 1</h2>
+        <p class="album-artist">ERV</p>
+        <p class="album-meta"><span id="hpm1-count">—</span> morceaux</p>
+      </div>
+    </div>
+    <div class="tracklist" id="tracklist-hpm1"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-logo">HPM</div>
+  <p class="footer-copy">© 2025 ERV — Haut Potentiel Musicale. Tous droits réservés.</p>
+</footer>
+
+<script>
+
+// ═══════════════════════════════════════════════════════════════════
+// FICHIER DE CONFIGURATION DES MORCEAUX
+//
+// Partie 2 → fichiers MP4  dans le dossier  media/partie2/
+// Partie 1 → fichiers MP3  dans le dossier  media/partie1/
+//
+// Champs :
+//   title     : Nom du morceau affiché
+//   file      : Nom du fichier (ex: "intro.mp4") ou null si verrouillé
+//   available : true = cliquable, false = cadenas
+// ═══════════════════════════════════════════════════════════════════
+
+const HPM_TRACKS = {
+
+  // ── PARTIE 2 — MP4 ──────────────────────────────────────────────
+  partie2: [
+    { title: "XXXX",            file: null,              available: false },
+    { title: "XXXX", file: null,              available: false },
+    { title: "XXXX",   file: null,              available: false },
+    { title: "SUV",  file: "suv.mp4",              available: true },
+    { title: "XXXX",          file: null,              available: false },
+    { title: "XXXX",       file: null,              available: false },
+    { title: "XXXX",            file: null,              available: false },
+    { title: "IL TEPATE",       file: "iltepate.mp4",              available: true },
+    { title: "XXXX",       file: null,              available: false },
+  ],
+
+  // ── PARTIE 1 — MP3 ──────────────────────────────────────────────
+  partie1: [
+    { title: "INTRO",       file: "intro.mp3",       available: true  },
+    { title: "LEVEL UP",  file: "levelup.mp3",  available: true  },
+    { title: "GOVA",   file: "gova.mp3",              available: true },
+    { title: "ROLLIE",   file: "rollie.mp3",              available: true },
+    { title: "POLYVALANT",   file: "polyvalant.mp3",              available: true },
+    { title: "CAPRI-SUN",   file: "caprisun.mp3",              available: true },
+    { title: "FAUX-FRERE",   file: "fauxfrere.mp3",              available: true },
+    { title: "KDB",   file: "kdb.mp3",              available: true },
+    { title: "OPERATOR",   file: "operator.mp3",              available: true },
+  ]
+
+};
+
+</script>
+<script>
+
+// ═══════════════════════════════════════════════════════════════════
+// HPM — MAIN.JS
+// ═══════════════════════════════════════════════════════════════════
+
+// ── DATE DE SORTIE ────────────────────────────────────────────────
+const RELEASE_DATE = new Date("2026-07-10T22:00:00");
+
+// ── COUNTDOWN ─────────────────────────────────────────────────────
+(function initCountdown() {
+  const daysEl  = document.getElementById("cd-days");
+  const hoursEl = document.getElementById("cd-hours");
+  const minsEl  = document.getElementById("cd-mins");
+  const secsEl  = document.getElementById("cd-secs");
+  const unitsEl = document.getElementById("countdownUnits");
+  const doneEl  = document.getElementById("countdownDone");
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  function flipNum(el, newVal) {
+    if (el.textContent === newVal) return;
+    el.classList.add("flip-out");
+    setTimeout(() => {
+      el.textContent = newVal;
+      el.classList.remove("flip-out");
+      el.classList.add("flip-in");
+      setTimeout(() => el.classList.remove("flip-in"), 300);
+    }, 150);
+  }
+
+  function tick() {
+    const diff = RELEASE_DATE.getTime() - Date.now();
+    if (diff <= 0) {
+      unitsEl.style.opacity = "0";
+      setTimeout(() => {
+        unitsEl.style.display = "none";
+        doneEl.style.display  = "flex";
+        doneEl.classList.add("fade-in-up");
+      }, 800);
+      return;
+    }
+    flipNum(daysEl,  pad(Math.floor(diff / 86400000)));
+    flipNum(hoursEl, pad(Math.floor((diff % 86400000) / 3600000)));
+    flipNum(minsEl,  pad(Math.floor((diff % 3600000) / 60000)));
+    flipNum(secsEl,  pad(Math.floor((diff % 60000) / 1000)));
+    setTimeout(tick, 1000);
+  }
+  tick();
+})();
+
+// ── TRACKLIST BUILDER ─────────────────────────────────────────────
+// Référence globale au média en cours de lecture (audio ou vidéo)
+let currentMedia = null;
+let currentItem  = null;
+let openMp4Item  = null;
+
+function stopCurrent() {
+  if (currentMedia) {
+    currentMedia.pause();
+    currentMedia.currentTime = 0;
+    currentMedia = null;
+  }
+  if (currentItem) {
+    currentItem.classList.remove("playing");
+    currentItem = null;
+  }
+}
+
+function buildTracklist(tracks, containerId, mediaType) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  tracks.forEach((track, i) => {
+    const item = document.createElement("div");
+    item.className = "track-item" + (track.available ? " available" : " locked");
+
+    // ── Header ──
+    const header = document.createElement("div");
+    header.className = "track-header";
+
+    const num = document.createElement("span");
+    num.className = "track-num";
+    num.textContent = String(i + 1).padStart(2, "0");
+
+    const title = document.createElement("span");
+    title.className = "track-title";
+    title.textContent = track.available ? track.title : "🔒 " + track.title;
+
+    const icon = document.createElement("div");
+    icon.className = "track-icon";
+
+    const ICON_PLAY   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>`;
+    const ICON_PAUSE  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>`;
+    const ICON_CHEV   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>`;
+    const ICON_LOCK   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+
+    if (track.available) {
+      icon.innerHTML = mediaType === "mp3" ? ICON_PLAY : ICON_CHEV;
+    } else {
+      icon.innerHTML = ICON_LOCK;
+    }
+
+    header.appendChild(num);
+    header.appendChild(title);
+    header.appendChild(icon);
+    item.appendChild(header);
+
+    if (track.available) {
+
+      if (mediaType === "mp3") {
+        // ── MP3 : lecture auto au clic ──
+        const audioWrap = document.createElement("div");
+        audioWrap.className = "track-audio";
+
+        const audio = document.createElement("audio");
+        audio.controls = true;
+        audio.preload  = "none";
+        audio.src      = `media/partie1/${track.file}`;
+        audioWrap.appendChild(audio);
+        item.appendChild(audioWrap);
+
+        header.addEventListener("click", () => {
+          const isPlaying = item.classList.contains("playing");
+
+          // Stopper tout ce qui joue
+          stopCurrent();
+
+          // Fermer les MP4 ouverts
+          if (openMp4Item) {
+            openMp4Item.classList.remove("open");
+            const b = openMp4Item.querySelector(".track-body");
+            if (b) b.style.maxHeight = "0";
+            openMp4Item = null;
+          }
+
+          if (!isPlaying) {
+            item.classList.add("playing");
+            icon.innerHTML = ICON_PAUSE;
+            currentMedia = audio;
+            currentItem  = item;
+            audio.play().catch(() => {});
+          } else {
+            icon.innerHTML = ICON_PLAY;
+          }
+        });
+
+        audio.addEventListener("ended", () => {
+          item.classList.remove("playing");
+          icon.innerHTML = ICON_PLAY;
+          currentMedia = null;
+          currentItem  = null;
+        });
+
+        audio.addEventListener("pause", () => {
+          if (!audio.ended) icon.innerHTML = ICON_PLAY;
+        });
+
+        audio.addEventListener("play", () => {
+          icon.innerHTML = ICON_PAUSE;
+        });
+
+      } else {
+        // ── MP4 : dépliage + lecture auto ──
+        const body = document.createElement("div");
+        body.className = "track-body";
+
+        const videoWrap = document.createElement("div");
+        videoWrap.className = "track-video";
+
+        const video = document.createElement("video");
+        video.controls = true;
+        video.preload  = "none";
+        video.src      = `media/partie2/${track.file}`;
+        videoWrap.appendChild(video);
+        body.appendChild(videoWrap);
+        item.appendChild(body);
+
+        header.addEventListener("click", () => {
+          const isOpen = item.classList.contains("open");
+
+          // Stopper l'audio/vidéo en cours
+          stopCurrent();
+
+          // Fermer l'autre MP4 ouvert
+          if (openMp4Item && openMp4Item !== item) {
+            openMp4Item.classList.remove("open");
+            const b = openMp4Item.querySelector(".track-body");
+            if (b) b.style.maxHeight = "0";
+            const v = openMp4Item.querySelector("video");
+            if (v) { v.pause(); v.currentTime = 0; }
+            openMp4Item = null;
+          }
+
+          if (isOpen) {
+            item.classList.remove("open");
+            body.style.maxHeight = "0";
+            video.pause();
+            video.currentTime = 0;
+            openMp4Item = null;
+          } else {
+            item.classList.add("open");
+            body.style.maxHeight = body.scrollHeight + "px";
+            openMp4Item  = item;
+            currentMedia = video;
+            currentItem  = item;
+            item.classList.add("playing");
+            video.play().catch(() => {});
+          }
+        });
+
+        video.addEventListener("loadedmetadata", () => {
+          if (item.classList.contains("open")) {
+            body.style.maxHeight = body.scrollHeight + "px";
+          }
+        });
+
+        video.addEventListener("ended", () => {
+          item.classList.remove("playing");
+          currentMedia = null;
+          currentItem  = null;
+        });
+      }
+    }
+
+    container.appendChild(item);
+  });
+}
+
+buildTracklist(HPM_TRACKS.partie2, "tracklist-hpm2", "mp4");
+buildTracklist(HPM_TRACKS.partie1, "tracklist-hpm1", "mp3");
+document.getElementById("hpm2-count").textContent = HPM_TRACKS.partie2.length;
+document.getElementById("hpm1-count").textContent = HPM_TRACKS.partie1.length;
+
+// ── PARALLAX ──────────────────────────────────────────────────────
+(function() {
+  const bg = document.getElementById("heroBg");
+  if (!bg) return;
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        bg.style.transform = `scale(1.08) translateY(${window.scrollY * 0.3}px)`;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+})();
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────────
+(function() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("revealed"); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+})();
+
+// ── COUNTDOWN FLOAT APPEAR ────────────────────────────────────────
+setTimeout(() => {
+  const f = document.getElementById("countdownFloat");
+  if (f) f.classList.add("visible");
+}, 600);
+
+</script>
+
+<script>
+function toggleFlip(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.classList.toggle("flipped");
+  // Update hint text
+  const hint = card.parentElement.querySelector(".flip-hint");
+  if (hint) {
+    hint.textContent = card.classList.contains("flipped")
+      ? "Cliquer pour voir la pochette"
+      : "Cliquer pour voir la tracklist";
+  }
+}
+</script>
+
+</body>
+</html>
